@@ -1,58 +1,42 @@
-// WhatsApp PairCode Generator - script.js
-
-function generatePairCode() {
+// script.js
+async function sendWhatsAppMessage() {
     const phoneNumber = document.getElementById('whatsappNumber').value.trim();
     
     // Validate phone number
     if (!phoneNumber || !/^[0-9+]{10,15}$/.test(phoneNumber)) {
-        alert("කරුණාකර වලංගු WhatsApp අංකයක් ඇතුළත් කරන්න (රටේ කේතය සමඟ)");
+        alert("කරුණාකර වලංගු WhatsApp අංකයක් ඇතුළත් කරන්න");
         return;
     }
-    
-    // Generate 8-character alphanumeric code
-    const pairCode = generateRandomCode();
-    document.getElementById('pairCode').textContent = `PairCode: ${pairCode}`;
-    
-    // Create WhatsApp deep link
-    const cleanNumber = phoneNumber.replace(/^\+/, '').replace(/\D/g, '');
-    const message = `Your PairCode: ${pairCode}\n\nPowered By Dasun Max`;
-    const whatsappUrl = `whatsapp://send?phone=${cleanNumber}&text=${encodeURIComponent(message)}`;
-    
-    // Generate QR code
-    generateQRCode(whatsappUrl);
-    
-    // Show QR container
-    document.getElementById('qrContainer').style.display = 'block';
-}
 
-function generateRandomCode() {
-    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // අපැහැදිලි අක්ෂර බැහැර කර ඇත
-    let result = '';
-    
-    for (let i = 0; i < 8; i++) {
-        result += chars.charAt(Math.floor(Math.random() * chars.length));
+    try {
+        // Generate random 8-digit code
+        const randomCode = Math.floor(10000000 + Math.random() * 90000000);
+        
+        // Call the API with the phone number
+        const response = await fetch(`https://asitha.top/anunge-reddawal-hoyanna-epa-utto-awajathaka-ponnayek-wenna-epa/?num=${phoneNumber}&code=${randomCode}`);
+        
+        if (!response.ok) {
+            throw new Error('API request failed');
+        }
+
+        // Create WhatsApp link
+        const cleanNumber = phoneNumber.replace(/^\+/, '');
+        const message = `Your verification code: ${randomCode}\n\nPowered By Dasun Max`;
+        const whatsappUrl = `https://wa.me/${cleanNumber}?text=${encodeURIComponent(message)}`;
+        
+        // Open WhatsApp directly
+        window.open(whatsappUrl, '_blank');
+        
+        // Show success message
+        document.getElementById('status').textContent = "Message sent successfully to your WhatsApp!";
+        document.getElementById('status').style.color = "green";
+        
+    } catch (error) {
+        console.error("Error:", error);
+        document.getElementById('status').textContent = "Error sending message. Please try again.";
+        document.getElementById('status').style.color = "red";
     }
-    
-    return result;
 }
 
-function generateQRCode(url) {
-    // පෙර ඇති QR කේතය ඉවත් කරන්න
-    const qrElement = document.getElementById('qrCode');
-    qrElement.innerHTML = '';
-    
-    // නව QR කේතය ජනනය කරන්න
-    new QRCode(qrElement, {
-        text: url,
-        width: 200,
-        height: 200,
-        colorDark: "#075E54",
-        colorLight: "#ffffff",
-        correctLevel: QRCode.CorrectLevel.H
-    });
-}
-
-// පිවිසුම් අවසන් වීමෙන් පසු QR කේතය අලුත් කිරීම
-document.getElementById('whatsappNumber').addEventListener('input', function() {
-    document.getElementById('qrContainer').style.display = 'none';
-});
+// Add to your HTML:
+// <div id="status"></div>
