@@ -1,48 +1,45 @@
-function generateLink() {
-    // WhatsApp අංකය ලබා ගන්න
-    const phoneNumber = document.getElementById('whatsappNumber').value;
+function generatePairCode() {
+    const phoneNumber = document.getElementById('whatsappNumber').value.trim();
     
-    // අංකය වලංගුදැයි පරීක්ෂා කරන්න
+    // Validate phone number
     if (!phoneNumber || !/^[0-9+]{10,15}$/.test(phoneNumber)) {
         alert("කරුණාකර වලංගු WhatsApp අංකයක් ඇතුළත් කරන්න (රටේ කේතය සමඟ)");
         return;
     }
     
-    // 8 අක්ෂර මිශ්‍ර PairCode එකක් ජනනය කරන්න
-    const pairCode = generatePairCode();
+    // Generate 8-character alphanumeric code
+    const pairCode = generateRandomCode();
+    document.getElementById('pairCode').textContent = `PairCode: ${pairCode}`;
     
-    // WhatsApp සබැඳිය සාදන්න
-    const message = encodeURIComponent(`Your unique code: ${pairCode}\n\nPowered By Dasun Max`);
-    const whatsappLink = `https://wa.me/${phoneNumber}?text=${message}`;
+    // Create WhatsApp link
+    const cleanNumber = phoneNumber.replace(/^\+/, '').replace(/\D/g, '');
+    const message = `Your PairCode: ${pairCode}\n\nPowered By Dasun Max`;
+    const whatsappLink = `https://wa.me/${cleanNumber}?text=${encodeURIComponent(message)}`;
     
-    // ප්‍රතිඵල පෙන්වන්න
-    document.getElementById('generatedLink').innerHTML = `
-        <p>Your PairCode: <strong>${pairCode}</strong></p>
-        <p>WhatsApp Link: <a href="${whatsappLink}" target="_blank">${whatsappLink}</a></p>
-    `;
-    
-    // QR කේතය ජනනය කරන්න
+    // Generate QR code
     generateQRCode(whatsappLink);
+    
+    // Show QR container
+    document.getElementById('qrContainer').style.display = 'block';
 }
 
-function generatePairCode() {
-    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+function generateRandomCode() {
+    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // Excluded easily confused characters
     let result = '';
     
     for (let i = 0; i < 8; i++) {
-        const randomIndex = Math.floor(Math.random() * chars.length);
-        result += chars[randomIndex];
+        result += chars.charAt(Math.floor(Math.random() * chars.length));
     }
     
     return result;
 }
 
 function generateQRCode(url) {
-    // QR කේතය ජනනය කිරීමට QRServer API භාවිතා කරන්න
-    const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(url)}`;
+    // Using QRServer API
+    const qrSize = 250;
+    const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=${qrSize}x${qrSize}&data=${encodeURIComponent(url)}`;
     
     document.getElementById('qrCode').innerHTML = `
-        <img src="${qrCodeUrl}" alt="WhatsApp QR Code">
-        <p>Scan this QR code to send the message</p>
+        <img src="${qrUrl}" alt="WhatsApp QR Code" style="width: 100%; max-width: ${qrSize}px;">
     `;
-      }
+}
