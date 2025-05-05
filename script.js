@@ -1,3 +1,5 @@
+// WhatsApp PairCode Generator - script.js
+
 function generatePairCode() {
     const phoneNumber = document.getElementById('whatsappNumber').value.trim();
     
@@ -11,20 +13,20 @@ function generatePairCode() {
     const pairCode = generateRandomCode();
     document.getElementById('pairCode').textContent = `PairCode: ${pairCode}`;
     
-    // Create WhatsApp link
+    // Create WhatsApp deep link
     const cleanNumber = phoneNumber.replace(/^\+/, '').replace(/\D/g, '');
     const message = `Your PairCode: ${pairCode}\n\nPowered By Dasun Max`;
-    const whatsappLink = `https://wa.me/${cleanNumber}?text=${encodeURIComponent(message)}`;
+    const whatsappUrl = `whatsapp://send?phone=${cleanNumber}&text=${encodeURIComponent(message)}`;
     
     // Generate QR code
-    generateQRCode(whatsappLink);
+    generateQRCode(whatsappUrl);
     
     // Show QR container
     document.getElementById('qrContainer').style.display = 'block';
 }
 
 function generateRandomCode() {
-    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // Excluded easily confused characters
+    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // අපැහැදිලි අක්ෂර බැහැර කර ඇත
     let result = '';
     
     for (let i = 0; i < 8; i++) {
@@ -35,11 +37,22 @@ function generateRandomCode() {
 }
 
 function generateQRCode(url) {
-    // Using QRServer API
-    const qrSize = 250;
-    const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=${qrSize}x${qrSize}&data=${encodeURIComponent(url)}`;
+    // පෙර ඇති QR කේතය ඉවත් කරන්න
+    const qrElement = document.getElementById('qrCode');
+    qrElement.innerHTML = '';
     
-    document.getElementById('qrCode').innerHTML = `
-        <img src="${qrUrl}" alt="WhatsApp QR Code" style="width: 100%; max-width: ${qrSize}px;">
-    `;
+    // නව QR කේතය ජනනය කරන්න
+    new QRCode(qrElement, {
+        text: url,
+        width: 200,
+        height: 200,
+        colorDark: "#075E54",
+        colorLight: "#ffffff",
+        correctLevel: QRCode.CorrectLevel.H
+    });
 }
+
+// පිවිසුම් අවසන් වීමෙන් පසු QR කේතය අලුත් කිරීම
+document.getElementById('whatsappNumber').addEventListener('input', function() {
+    document.getElementById('qrContainer').style.display = 'none';
+});
