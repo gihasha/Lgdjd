@@ -1,47 +1,68 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="si">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WhatsApp Link Generator</title>
+    <title>WhatsApp PairCode Generator</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            max-width: 600px;
+            max-width: 500px;
             margin: 0 auto;
             padding: 20px;
             text-align: center;
         }
         input, button {
-            padding: 10px;
+            padding: 12px;
             margin: 10px 0;
             width: 100%;
-            box-sizing: border-box;
-        }
-        #qrCode {
-            margin: 20px 0;
-        }
-        #generatedLink {
-            word-break: break-all;
-            margin: 20px 0;
-            padding: 10px;
-            background: #f5f5f5;
+            border: 1px solid #ddd;
             border-radius: 5px;
+            font-size: 16px;
+        }
+        button {
+            background-color: #25D366;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        #qrContainer {
+            margin: 25px 0;
+            padding: 20px;
+            border: 1px dashed #25D366;
+            border-radius: 10px;
+        }
+        #pairCode {
+            font-size: 24px;
+            font-weight: bold;
+            color: #075E54;
+            margin: 15px 0;
+        }
+        .instructions {
+            margin-top: 30px;
+            font-size: 14px;
+            color: #555;
         }
     </style>
 </head>
 <body>
-    <h1>WhatsApp Link Generator</h1>
-    <p>Enter your WhatsApp number to generate a unique link</p>
+    <h1 style="color: #075E54;">WhatsApp PairCode Generator</h1>
+    <p>Enter your WhatsApp number to generate a QR code</p>
     
-    <input type="text" id="whatsappNumber" placeholder="Enter WhatsApp number (with country code)" 
+    <input type="tel" id="whatsappNumber" 
+           placeholder="WhatsApp number with country code (e.g., 94771234567)" 
            pattern="[0-9+]{10,15}" required>
     
-    <button onclick="generateLink()">Generate WhatsApp Link</button>
+    <button onclick="generatePairCode()">Generate QR Code</button>
     
-    <div id="qrCode"></div>
-    <div id="generatedLink"></div>
-    
+    <div id="qrContainer" style="display: none;">
+        <p>Scan this QR code with your phone:</p>
+        <div id="qrCode"></div>
+        <div id="pairCode"></div>
+        <p class="instructions">This will send a message to your own WhatsApp "You" chat</p>
+    </div>
+
     <script src="script.js"></script>
 </body>
-                              </html>
+</html>
